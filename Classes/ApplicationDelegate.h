@@ -17,7 +17,26 @@
 	SecKeychainRef keychain;
 	SecCertificateRef certificate;
 	SecIdentityRef identity;
+    
+    NSTextField *keyTextField;
+    NSTextField *valueTextField;
+    NSTextField *tokenTextField;
+    NSTextField *payLoadTextField;
 }
+@property (assign) IBOutlet NSTextField *keyTextField;
+@property (assign) IBOutlet NSTextField *valueTextField;
+@property (assign) IBOutlet NSTextField *tokenTextField;
+@property (assign) IBOutlet NSTextField *payLoadTextField;
+
 #pragma mark IBAction
 - (IBAction)push:(id)sender;
+
+- (IBAction)selectEenuButton:(id)sender;
+
+- (IBAction)change:(id)sender;
+
+- (IBAction)addKeyValue:(id)sender;
+
+
+
 @end
