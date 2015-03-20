@@ -27,9 +27,9 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
 
 
 #pragma mark Properties
-@property (nonatomic , retain) NSString *payload, *certificate , *deviceToken;
+@property (nonatomic , strong) NSString *payload, *certificate , *deviceToken;
 /** 記住 App Target 並且對應該 .cer File */
-@property (nonatomic , retain) NSMutableString *appTarget;
+@property (nonatomic , strong) NSMutableString *appTarget;
 @property (nonatomic , strong) NSMutableDictionary *targetKeyDeviceTokenValue;
 
 
@@ -59,12 +59,19 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
 - (id)init {
     self = [super init];
     if(self != nil) {
-        _targetKeyDeviceTokenValue = [[NSMutableDictionary alloc] init];
-        self.appTarget = [[NSMutableString alloc] initWithString:@"development_com.gonline.O8App"];
-        self.deviceToken = [[NSMutableString alloc] initWithString:@""];
-        [_targetKeyDeviceTokenValue setObject:self.deviceToken forKey:O8AppTargetTypeElectronic];
-        self.payload = @"{\"aps\":{\"sound\":\"default\",\"badge\":1,\"alert\":\"測試 O8App 推播！\"}}";
-        self.certificate = [NSString stringWithFormat:@"%@/%@/development/%@.cer", CER_PATH , [[self.appTarget pathExtension] stringByReplacingOccurrencesOfString:@"O8App" withString:@"AllInOne"] , self.appTarget ];
+        [self load];
+        if( _targetKeyDeviceTokenValue == nil ){
+            _targetKeyDeviceTokenValue = [[NSMutableDictionary alloc] init];
+        }
+        _appTarget = [[NSMutableString alloc] initWithString:@"development_com.gonline.O8App"];
+        _deviceToken = [[NSString alloc] initWithString:TEST_TOKEN];
+        if ( ![_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeElectronic] ) {
+            [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:O8AppTargetTypeAllInOne];
+        }
+        
+        _payload = @"{\"aps\":{\"sound\":\"default\",\"badge\":1,\"alert\":\"測試 O8App 推播！\"}}";
+        _certificate = [[NSString stringWithFormat:@"%@/%@/development/%@.cer", CER_PATH , [[self.appTarget pathExtension] stringByReplacingOccurrencesOfString:@"O8App" withString:@"AllInOne"] , _appTarget ] copy];
+        
     }
     return self;
 }
@@ -186,6 +193,9 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
 
 - (IBAction)push:(id)sender {
     
+    [self connect];
+    
+    
     if(self.certificate == nil) {
         NSLog(@"you need the APNS Certificate for the app to work");
         exit(1);
@@ -243,54 +253,53 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
     if ( [tempMenuItem.title isEqualToString:O8AppTargetTypeAllInOne] ) {
         [_appTarget setString:@"development_com.gonline.O8App"];
         if ( [_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeAllInOne] ) {
-            _deviceToken = [_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeAllInOne];
+            _deviceToken = [[_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeAllInOne] copy];
         }
         else{
-            [_targetKeyDeviceTokenValue setObject:_deviceToken forKey:O8AppTargetTypeAllInOne];
+            [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:O8AppTargetTypeAllInOne];
         }
     }
     else if( [tempMenuItem.title isEqualToString:O8AppTargetTypeElectronic] ){
         [_appTarget setString:@"development_com.gonline.O8AppElectronic"];
         if ( [_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeElectronic] ) {
-            _deviceToken = [_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeElectronic];
+            _deviceToken = [[_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeElectronic] copy];
         }
         else{
-            [_targetKeyDeviceTokenValue setObject:_deviceToken forKey:O8AppTargetTypeElectronic];
+            [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:O8AppTargetTypeElectronic];
         }
     }
     else if( [tempMenuItem.title isEqualToString:O8AppTargetTypePachin] ){
         [_appTarget setString:@"development_com.gonline.O8AppPachin"];
         if ( [_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypePachin] ) {
-            _deviceToken = [_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypePachin];
+            _deviceToken = [[_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypePachin] copy];
         }
         else{
-            [_targetKeyDeviceTokenValue setObject:_deviceToken forKey:O8AppTargetTypePachin];
+            [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:O8AppTargetTypePachin];
         }
     }
     else if( [tempMenuItem.title isEqualToString:O8AppTargetTypeReal] ){
         [_appTarget setString:@"development_com.gonline.O8AppReal"];
         if ( [_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeReal] ) {
-            _deviceToken = [_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeReal];
+            _deviceToken = [[_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeReal] copy];
         }
         else{
-            [_targetKeyDeviceTokenValue setObject:_deviceToken forKey:O8AppTargetTypeReal];
+            [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:O8AppTargetTypeReal];
         }
     }
     else if( [tempMenuItem.title isEqualToString:O8AppTargetSlot] ){
         [_appTarget setString:@"development_com.gonline.O8AppSlot"];
         if ( [_targetKeyDeviceTokenValue objectForKey:O8AppTargetSlot] ) {
-            _deviceToken = [_targetKeyDeviceTokenValue objectForKey:O8AppTargetSlot];
+            _deviceToken = [[_targetKeyDeviceTokenValue objectForKey:O8AppTargetSlot] copy];
         }
         else{
-            [_targetKeyDeviceTokenValue setObject:_deviceToken forKey:O8AppTargetSlot];
+            [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:O8AppTargetSlot];
         }
     }
     else{
         [_appTarget setString:@"development_com.gonline.O8AppElectronic"];
     }
     [self.tokenTextField setStringValue:_deviceToken];
-    _certificate = [NSString stringWithFormat:@"%@/%@/development/%@.cer", CER_PATH , [[self.appTarget pathExtension] stringByReplacingOccurrencesOfString:@"O8App" withString:@""] , self.appTarget ];
-    [self connect];
+    _certificate = [[NSString stringWithFormat:@"%@/%@/development/%@.cer", CER_PATH , [[self.appTarget pathExtension] stringByReplacingOccurrencesOfString:@"O8App" withString:@""] , self.appTarget ] copy];
 }
 
 
@@ -299,12 +308,9 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
     if ( [tempTargetString isEqualToString:@"O8App"] ) {
         tempTargetString = @"O8AppAllInOne";
     }
-    if ( [_targetKeyDeviceTokenValue objectForKey:tempTargetString] ) {
-        [_targetKeyDeviceTokenValue setValue:_deviceToken forKey:tempTargetString];
-    }
-    else{
-        [_targetKeyDeviceTokenValue setObject:_deviceToken forKey:tempTargetString];
-    }
+    [_targetKeyDeviceTokenValue setObject:[[self.tokenTextField stringValue] copy] forKey:tempTargetString];
+    _deviceToken = [[self.tokenTextField stringValue] copy];
+    [self save];
 }
 
 - (IBAction)addKeyValue:(id)sender{
@@ -330,5 +336,25 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
 }
 
 
+-(void)save{
+    NSString *path = [[NSBundle mainBundle] bundlePath];
+    NSLog(@"\n\n********************************************************************\n bundle path save : %@ \n********************************************************************\n\n" , path);
+    NSString *saveDateName = [path stringByAppendingPathComponent:@"deviceToken"];
+    
+    
+    [NSKeyedArchiver archiveRootObject:_targetKeyDeviceTokenValue toFile:saveDateName];
+}
+
+
+-(void)load{
+    NSString *path = [[NSBundle mainBundle] bundlePath];
+    NSLog(@"\n\n********************************************************************\n bundle path load : %@ \n********************************************************************\n\n" , path);
+    NSString *loadDataName = [path stringByAppendingPathComponent:@"deviceToken"];
+    if ( ![[NSFileManager defaultManager] fileExistsAtPath:loadDataName] ) {
+        return;
+    }
+    NSDictionary *tokenDic = [NSKeyedUnarchiver unarchiveObjectWithFile:loadDataName];
+    _targetKeyDeviceTokenValue = [tokenDic mutableCopy];
+}
 
 @end
