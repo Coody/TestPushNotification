@@ -50,6 +50,9 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
 @synthesize valueTextField;
 @synthesize tokenTextField;
 @synthesize payLoadTextField;
+@synthesize pathTextField;
+@synthesize savePath;
+@synthesize devicePopButton;
 @synthesize deviceToken = _deviceToken;
 @synthesize payload = _payload;
 @synthesize certificate = _certificate;
@@ -59,7 +62,7 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
 - (id)init {
     self = [super init];
     if(self != nil) {
-        [self load];
+        
         if( _targetKeyDeviceTokenValue == nil ){
             _targetKeyDeviceTokenValue = [[NSMutableDictionary alloc] init];
         }
@@ -70,7 +73,7 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
         }
         
         _payload = @"{\"aps\":{\"sound\":\"default\",\"badge\":1,\"alert\":\"測試 O8App 推播！\"}}";
-        _certificate = [[NSString stringWithFormat:@"%@/%@/development/%@.cer", CER_PATH , [[self.appTarget pathExtension] stringByReplacingOccurrencesOfString:@"O8App" withString:@"AllInOne"] , _appTarget ] copy];
+        _certificate = [[NSString stringWithFormat:@"%@/%@/development/%@.cer", pathTextField.stringValue , [[self.appTarget pathExtension] stringByReplacingOccurrencesOfString:@"O8App" withString:@"AllInOne"] , _appTarget ] copy];
         
     }
     return self;
@@ -88,11 +91,11 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
     [super dealloc];
 }
 
-
 #pragma mark Inherent
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
-    
+    [self load];
+    [self loadPathInBundle];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification {
@@ -299,7 +302,7 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
         [_appTarget setString:@"development_com.gonline.O8AppElectronic"];
     }
     [self.tokenTextField setStringValue:_deviceToken];
-    _certificate = [[NSString stringWithFormat:@"%@/%@/development/%@.cer", CER_PATH , [[self.appTarget pathExtension] stringByReplacingOccurrencesOfString:@"O8App" withString:@""] , self.appTarget ] copy];
+    _certificate = [[NSString stringWithFormat:@"%@/%@/development/%@.cer", [pathTextField stringValue] , [[self.appTarget pathExtension] stringByReplacingOccurrencesOfString:@"O8App" withString:@""] , self.appTarget ] copy];
 }
 
 
@@ -313,6 +316,14 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
     [self save];
 }
 
+- (IBAction)savePathWithUserPath:(id)sender{
+    if ( [pathTextField.stringValue isEqualToString:@""] || pathTextField == nil ) {
+        [pathTextField setStringValue:@"/Users/coody/Desktop/iOS_Share/doc/gonline/憑證/推播/O8App/Exhibition"];
+    }
+    _certificate = [[NSString stringWithFormat:@"%@/%@/development/%@.cer", [pathTextField.stringValue copy] , [[self.appTarget pathExtension] stringByReplacingOccurrencesOfString:@"O8App" withString:@"AllInOne"] , _appTarget ] copy];
+    [self savePathInBundle];
+}
+
 - (IBAction)addKeyValue:(id)sender{
     
     NSMutableString *tempPayload = [[NSMutableString alloc] init];
@@ -323,7 +334,8 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
         
         [tempPayload setString:[tempPayload substringToIndex:([tempPayload length]-1)]];
         if ((![tempValueString isEqualToString:@""] && tempValueString != nil)) {
-            [tempPayload setString:[tempPayload stringByAppendingString:[NSString stringWithFormat:@",\"%@:\"%@\"}" , tempKeyString , tempValueString]]];
+            // @"{\"aps\":{\"sound\":\"default\",\"badge\":1,\"alert\":\"測試 O8App 推播！\"}}";
+            [tempPayload setString:[tempPayload stringByAppendingString:[NSString stringWithFormat:@",\"%@\":\"%@\"}" , tempKeyString , tempValueString]]];
             _payload = [tempPayload copy];
             [payLoadTextField setStringValue:_payload];
         }
@@ -341,7 +353,6 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
     NSLog(@"\n\n********************************************************************\n bundle path save : %@ \n********************************************************************\n\n" , path);
     NSString *saveDateName = [path stringByAppendingPathComponent:@"deviceToken"];
     
-    
     [NSKeyedArchiver archiveRootObject:_targetKeyDeviceTokenValue toFile:saveDateName];
 }
 
@@ -355,6 +366,27 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
     }
     NSDictionary *tokenDic = [NSKeyedUnarchiver unarchiveObjectWithFile:loadDataName];
     _targetKeyDeviceTokenValue = [tokenDic mutableCopy];
+    
 }
+
+-(void)savePathInBundle{
+    NSString *path = [[NSBundle mainBundle] bundlePath];
+    NSLog(@"\n\n********************************************************************\n bundle path save : %@ \n********************************************************************\n\n" , path);
+    NSString *savePathName = [path stringByAppendingPathComponent:@"path"];
+    
+    [NSKeyedArchiver archiveRootObject:@{@"path":pathTextField.stringValue} toFile:savePathName];
+}
+
+-(void)loadPathInBundle{
+    NSString *path = [[NSBundle mainBundle] bundlePath];
+    NSLog(@"\n\n********************************************************************\n bundle path load : %@ \n********************************************************************\n\n" , path);
+    NSString *loadPathName = [path stringByAppendingPathComponent:@"path"];
+    if ( ![[NSFileManager defaultManager] fileExistsAtPath:loadPathName] ) {
+        return;
+    }
+    NSDictionary *pathDic = [NSKeyedUnarchiver unarchiveObjectWithFile:loadPathName];
+    [pathTextField setStringValue:[[pathDic objectForKey:@"path"] copy]];
+}
+
 
 @end
