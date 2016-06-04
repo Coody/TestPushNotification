@@ -8,20 +8,20 @@
 
 #import "ApplicationDelegate.h"
 
-
-NSString * const O8AppTargetTypeNotSet = @"NotSet";
-NSString * const O8AppTargetTypeAllInOne = @"O8AppAllInOne";
-NSString * const O8AppTargetTypeElectronic = @"O8AppElectronic";
-NSString * const O8AppTargetTypePachin = @"O8AppPachin";
-NSString * const O8AppTargetTypeReal = @"O8AppReal";
-NSString * const O8AppTargetSlot = @"O8AppSlot";
-
-// 預設推播憑證路徑（絕對路徑）
-#define CER_PATH @"/Users/coody/Desktop/iOS_Share/doc/gonline/憑證/推播/O8App/Exhibition"
+// 預設推播憑證名稱
+#define CER @"development_com.digitalent.Prime"
+// 預設推播憑證讀取的路徑（絕對路徑）
+#define CER_PATH @"/Volumes/HGST_1T/iOS_Share/doc/digi-talent/憑證/推播/development"
 // 預設 Token
 #define TEST_TOKEN @""
+// Target Name
+#define TARGET_NAME @"Prime"
+
 
 #include <Carbon/Carbon.h>
+
+//#define D_O8App
+
 
 @interface ApplicationDelegate ()
 
@@ -51,8 +51,10 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
 @synthesize tokenTextField;
 @synthesize payLoadTextField;
 @synthesize pathTextField;
+@synthesize targetTextField;
 @synthesize savePath;
 @synthesize devicePopButton;
+@synthesize saveTargetButton;
 @synthesize deviceToken = _deviceToken;
 @synthesize payload = _payload;
 @synthesize certificate = _certificate;
@@ -62,19 +64,7 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
 - (id)init {
     self = [super init];
     if(self != nil) {
-        
-        if( _targetKeyDeviceTokenValue == nil ){
-            _targetKeyDeviceTokenValue = [[NSMutableDictionary alloc] init];
-        }
-        _appTarget = [[NSMutableString alloc] initWithString:@"development_com.gonline.O8App"];
-        _deviceToken = [[NSString alloc] initWithString:TEST_TOKEN];
-        if ( ![_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeElectronic] ) {
-            [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:O8AppTargetTypeAllInOne];
-        }
-        
-        _payload = @"{\"aps\":{\"sound\":\"default\",\"badge\":1,\"alert\":\"測試 O8App 推播！\"}}";
-        _certificate = [[NSString stringWithFormat:@"%@/%@/development/%@.cer", pathTextField.stringValue , [[self.appTarget pathExtension] stringByReplacingOccurrencesOfString:@"O8App" withString:@"AllInOne"] , _appTarget ] copy];
-        
+        [self initialData];
     }
     return self;
 }
@@ -91,9 +81,33 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
     [super dealloc];
 }
 
+-(void)initialData{
+    
+    if( _targetKeyDeviceTokenValue == nil ){
+        _targetKeyDeviceTokenValue = [[NSMutableDictionary alloc] init];
+    }
+    _appTarget = [[NSMutableString alloc] initWithString:CER];
+    _deviceToken = [[NSString alloc] initWithString:TEST_TOKEN];
+    if ( ![_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeElectronic] ) {
+        [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:O8AppTargetTypeAllInOne];
+    }
+    
+#ifdef D_O8App
+    _payload = @"{\"aps\":{\"sound\":\"default\",\"badge\":1,\"alert\":\"測試 O8App 推播！\"}}";
+    _certificate = [[NSString stringWithFormat:@"%@/%@/development/%@.cer",
+                     pathTextField.stringValue ,
+                     [[self.appTarget pathExtension] stringByReplacingOccurrencesOfString:@"O8App" withString:@"AllInOne"] ,
+                     _appTarget ] copy];
+#else
+    _payload = @"{\"aps\":{\"sound\":\"default\",\"badge\":1,\"alert\":\"測試推播！\"}}";
+    _certificate = [[NSString stringWithFormat:@"%@/%@/development/%@.cer", pathTextField.stringValue , [self.appTarget pathExtension] , _appTarget ] copy];
+#endif
+}
+
 #pragma mark Inherent
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
+    
     [self load];
     [self loadPathInBundle];
 }
@@ -347,7 +361,7 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
     // {\"aps\":{\"sound\":\"default\",\"badge\":1,\"alert\":\"測試 O8App 推播！\"}
 }
 
-
+#pragma mark - 存/讀檔案
 -(void)save{
     NSString *path = [[NSBundle mainBundle] bundlePath];
     NSLog(@"\n\n********************************************************************\n bundle path save : %@ \n********************************************************************\n\n" , path);
@@ -388,5 +402,33 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
     [pathTextField setStringValue:[[pathDic objectForKey:@"path"] copy]];
 }
 
+- (IBAction)selectedDevicePopButton:(id)sender{
+    NSPopUpButton *tempBtn = (NSPopUpButton *)sender;
+    switch ( [tempBtn.titleOfSelectedItem intValue] ) {
+        case 1:
+        {
+            
+        }
+            break;
+        case 2:
+        {
+            
+        }
+            break;
+        case 3:
+        {
+            
+        }
+            break;
+        default:
+        {
+            
+        }
+            break;
+    }
+}
+
+- (IBAction)saveTarget:(id)sender {
+}
 
 @end

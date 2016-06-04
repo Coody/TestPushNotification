@@ -23,16 +23,21 @@
     NSTextField *tokenTextField;
     NSTextField *payLoadTextField;
     NSTextField *pathTextField;
+    NSTextField *targetTextField;
     NSButton *savePath;
     NSPopUpButtonCell *devicePopButton;
+    NSButton *saveTargetButton;
 }
 @property (assign) IBOutlet NSTextField *keyTextField;
 @property (assign) IBOutlet NSTextField *valueTextField;
 @property (assign) IBOutlet NSTextField *tokenTextField;
 @property (assign) IBOutlet NSTextField *payLoadTextField;
 @property (assign) IBOutlet NSTextField *pathTextField;
+@property (assign) IBOutlet NSTextField *targetTextField;
+
 @property (assign) IBOutlet NSButton *savePath;
 @property (assign) IBOutlet NSPopUpButtonCell *devicePopButton;
+@property (assign) IBOutlet NSButton *saveTargetButton;
 
 #pragma mark IBAction
 - (IBAction)push:(id)sender;
@@ -46,5 +51,7 @@
 - (IBAction)savePathWithUserPath:(id)sender;
 
 - (IBAction)selectedDevicePopButton:(id)sender;
+
+- (IBAction)saveTarget:(id)sender;
 
 @end
