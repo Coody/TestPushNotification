@@ -17,9 +17,9 @@ NSString * const O8AppTargetTypeReal = @"O8AppReal";
 NSString * const O8AppTargetSlot = @"O8AppSlot";
 
 // 預設推播憑證路徑（絕對路徑）
-#define CER_PATH @"/Users/coody/Desktop/iOS_Share/doc/gonline/憑證/推播/O8App/Exhibition"
+#define CER_PATH @"/Volumes/HGST_1T/iOS_Share/doc/digi-talent/憑證/推播"
 // 預設 Token
-#define TEST_TOKEN @""
+#define TEST_TOKEN @"d5098e55 b19062ae ec2ae3e0 5468be74 62832e9d d6b5adee a62cdf51 5b1062d0"
 
 #include <Carbon/Carbon.h>
 
@@ -66,14 +66,14 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
         if( _targetKeyDeviceTokenValue == nil ){
             _targetKeyDeviceTokenValue = [[NSMutableDictionary alloc] init];
         }
-        _appTarget = [[NSMutableString alloc] initWithString:@"development_com.gonline.O8App"];
+        _appTarget = [[NSMutableString alloc] initWithString:@"development_com.digitalent.Prime.AppStore"];
         _deviceToken = [[NSString alloc] initWithString:TEST_TOKEN];
         if ( ![_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeElectronic] ) {
             [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:O8AppTargetTypeAllInOne];
         }
         
         _payload = @"{\"aps\":{\"sound\":\"default\",\"badge\":1,\"alert\":\"測試 O8App 推播！\"}}";
-        _certificate = [[NSString stringWithFormat:@"%@/%@/development/%@.cer", pathTextField.stringValue , [[self.appTarget pathExtension] stringByReplacingOccurrencesOfString:@"O8App" withString:@"AllInOne"] , _appTarget ] copy];
+        _certificate = [[NSString stringWithFormat:@"%@/development/%@.cer", CER_PATH , _appTarget ] copy];
         
     }
     return self;
