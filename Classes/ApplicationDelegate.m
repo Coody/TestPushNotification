@@ -6,6 +6,18 @@
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
+/*
+ 
+ *dev 环境
+ result = MakeServerConnection("gateway.sandbox.push.apple.com", 2195, &socket, &peer);
+ result = SSLSetPeerDomainName(context, "gateway.push.apple.com", 30);
+ 
+ *ADHOC
+ result = MakeServerConnection("gateway.push.apple.com", 2195, &socket, &peer);
+ result = SSLSetPeerDomainName(context, "gateway.push.apple.com", 22); 
+ 
+ */
+
 #import "ApplicationDelegate.h"
 
 
@@ -17,9 +29,10 @@ NSString * const O8AppTargetTypeReal = @"O8AppReal";
 NSString * const O8AppTargetSlot = @"O8AppSlot";
 
 // 預設推播憑證路徑（絕對路徑）
-#define CER_PATH @"/Volumes/HGST_1T/iOS_Share/doc/digi-talent/憑證/推播"
+//#define CER_PATH @"/Volumes/HGST_1T/iOS_Share/doc/digi-talent/憑證/推播"
+#define CER_PATH @"/Volumes/HGST_1T/iOS_Share/doc/digi-talent-InHouse/憑證/推播"
 // 預設 Token
-#define TEST_TOKEN @"d5098e55 b19062ae ec2ae3e0 5468be74 62832e9d d6b5adee a62cdf51 5b1062d0"
+#define TEST_TOKEN @"88e62dcb 4dbe3cb1 2a177f46 555d9a8c da330c20 7c50224a 0860a8e3 4ba020f4"
 
 #include <Carbon/Carbon.h>
 
@@ -66,7 +79,7 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
         if( _targetKeyDeviceTokenValue == nil ){
             _targetKeyDeviceTokenValue = [[NSMutableDictionary alloc] init];
         }
-        _appTarget = [[NSMutableString alloc] initWithString:@"development_com.digitalent.Prime.AppStore"];
+        _appTarget = [[NSMutableString alloc] initWithString:@"development_com.digitalent.PrimeInHouse.InHouse"];
         _deviceToken = [[NSString alloc] initWithString:TEST_TOKEN];
         if ( ![_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeElectronic] ) {
             [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:O8AppTargetTypeAllInOne];
