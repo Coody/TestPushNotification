@@ -6,20 +6,38 @@
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
+/*
+ 
+ *dev 环境
+ result = MakeServerConnection("gateway.sandbox.push.apple.com", 2195, &socket, &peer);
+ result = SSLSetPeerDomainName(context, "gateway.sandbox.push.apple.com", 30);
+ 
+ *ADHOC
+ result = MakeServerConnection("gateway.push.apple.com", 2195, &socket, &peer);
+ result = SSLSetPeerDomainName(context, "gateway.push.apple.com", 22); 
+ 
+ */
+
 #import "ApplicationDelegate.h"
 
 
-NSString * const O8AppTargetTypeNotSet = @"NotSet";
-NSString * const O8AppTargetTypeAllInOne = @"O8AppAllInOne";
-NSString * const O8AppTargetTypeElectronic = @"O8AppElectronic";
-NSString * const O8AppTargetTypePachin = @"O8AppPachin";
-NSString * const O8AppTargetTypeReal = @"O8AppReal";
-NSString * const O8AppTargetSlot = @"O8AppSlot";
+//NSString * const O8AppTargetTypeNotSet = @"NotSet";
+//NSString * const O8AppTargetTypeAllInOne = @"O8AppAllInOne";
+//NSString * const O8AppTargetTypeElectronic = @"O8AppElectronic";
+//NSString * const O8AppTargetTypePachin = @"O8AppPachin";
+//NSString * const O8AppTargetTypeReal = @"O8AppReal";
+//NSString * const O8AppTargetSlot = @"O8AppSlot";
+
+// *.cer 檔案名稱
+#define CER_NAME @"TTQRCodeDemo_Aps_Development"
+
+// Product 名稱
+#define PRODUCT_NAME @"TTQRCodeDemo"
 
 // 預設推播憑證路徑（絕對路徑）
-#define CER_PATH @"/Users/coody/Desktop/iOS_Share/doc/gonline/憑證/推播/O8App/Exhibition"
+#define CER_PATH @"/Users/coodychou/Dropbox/Normi/important/App/TTQRCodeDemo/PushNotification"
 // 預設 Token
-#define TEST_TOKEN @""
+#define TEST_TOKEN @"a20b1ccb bca897e1 72cabe11 8f995c4a c5abf76e aef800bf 63a8d625 0095f51f"
 
 #include <Carbon/Carbon.h>
 
@@ -31,20 +49,13 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
 /** 記住 App Target 並且對應該 .cer File */
 @property (nonatomic , strong) NSMutableString *appTarget;
 @property (nonatomic , strong) NSMutableDictionary *targetKeyDeviceTokenValue;
-
-
 #pragma mark Private
 - (void)connect;
 - (void)disconnect;
-
-
 @end
 
 
-
 @implementation ApplicationDelegate
-
-
 #pragma mark Properties
 @synthesize keyTextField;
 @synthesize valueTextField;
@@ -66,14 +77,15 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
         if( _targetKeyDeviceTokenValue == nil ){
             _targetKeyDeviceTokenValue = [[NSMutableDictionary alloc] init];
         }
-        _appTarget = [[NSMutableString alloc] initWithString:@"development_com.gonline.O8App"];
+        _appTarget = [[NSMutableString alloc] initWithString:@"TTQRCodeDemo_Aps_Development"];
         _deviceToken = [[NSString alloc] initWithString:TEST_TOKEN];
-        if ( ![_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeElectronic] ) {
-            [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:O8AppTargetTypeAllInOne];
-        }
+//        if ( ![_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeElectronic] ) {
+//
+//        }
+        [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:PRODUCT_NAME];
         
-        _payload = @"{\"aps\":{\"sound\":\"default\",\"badge\":1,\"alert\":\"測試 O8App 推播！\"}}";
-        _certificate = [[NSString stringWithFormat:@"%@/%@/development/%@.cer", pathTextField.stringValue , [[self.appTarget pathExtension] stringByReplacingOccurrencesOfString:@"O8App" withString:@"AllInOne"] , _appTarget ] copy];
+        _payload = @"{\"aps\":{\"sound\":\"default\",\"badge\":1,\"alert\":\"測試 App 推播！\"}}";
+        _certificate = [[NSString stringWithFormat:@"%@/%@.cer", CER_PATH , _appTarget ] copy];
         
     }
     return self;
@@ -252,76 +264,77 @@ NSString * const O8AppTargetSlot = @"O8AppSlot";
 }
 
 - (IBAction)selectEenuButton:(id)sender{
-    NSPopUpButton *tempMenuItem = (NSPopUpButton *)sender;
-    if ( [tempMenuItem.title isEqualToString:O8AppTargetTypeAllInOne] ) {
-        [_appTarget setString:@"development_com.gonline.O8App"];
-        if ( [_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeAllInOne] ) {
-            _deviceToken = [[_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeAllInOne] copy];
-        }
-        else{
-            [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:O8AppTargetTypeAllInOne];
-        }
-    }
-    else if( [tempMenuItem.title isEqualToString:O8AppTargetTypeElectronic] ){
-        [_appTarget setString:@"development_com.gonline.O8AppElectronic"];
-        if ( [_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeElectronic] ) {
-            _deviceToken = [[_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeElectronic] copy];
-        }
-        else{
-            [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:O8AppTargetTypeElectronic];
-        }
-    }
-    else if( [tempMenuItem.title isEqualToString:O8AppTargetTypePachin] ){
-        [_appTarget setString:@"development_com.gonline.O8AppPachin"];
-        if ( [_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypePachin] ) {
-            _deviceToken = [[_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypePachin] copy];
-        }
-        else{
-            [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:O8AppTargetTypePachin];
-        }
-    }
-    else if( [tempMenuItem.title isEqualToString:O8AppTargetTypeReal] ){
-        [_appTarget setString:@"development_com.gonline.O8AppReal"];
-        if ( [_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeReal] ) {
-            _deviceToken = [[_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeReal] copy];
-        }
-        else{
-            [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:O8AppTargetTypeReal];
-        }
-    }
-    else if( [tempMenuItem.title isEqualToString:O8AppTargetSlot] ){
-        [_appTarget setString:@"development_com.gonline.O8AppSlot"];
-        if ( [_targetKeyDeviceTokenValue objectForKey:O8AppTargetSlot] ) {
-            _deviceToken = [[_targetKeyDeviceTokenValue objectForKey:O8AppTargetSlot] copy];
-        }
-        else{
-            [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:O8AppTargetSlot];
-        }
-    }
-    else{
-        [_appTarget setString:@"development_com.gonline.O8AppElectronic"];
-    }
-    [self.tokenTextField setStringValue:_deviceToken];
-    _certificate = [[NSString stringWithFormat:@"%@/%@/development/%@.cer", [pathTextField stringValue] , [[self.appTarget pathExtension] stringByReplacingOccurrencesOfString:@"O8App" withString:@""] , self.appTarget ] copy];
+//    NSPopUpButton *tempMenuItem = (NSPopUpButton *)sender;
+//    if ( [tempMenuItem.title isEqualToString:O8AppTargetTypeAllInOne] ) {
+//
+//    }
+//    else if( [tempMenuItem.title isEqualToString:O8AppTargetTypeElectronic] ){
+//        [_appTarget setString:@"development_com.gonline.O8AppElectronic"];
+//        if ( [_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeElectronic] ) {
+//            _deviceToken = [[_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeElectronic] copy];
+//        }
+//        else{
+//            [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:O8AppTargetTypeElectronic];
+//        }
+//    }
+//    else if( [tempMenuItem.title isEqualToString:O8AppTargetTypePachin] ){
+//        [_appTarget setString:@"development_com.gonline.O8AppPachin"];
+//        if ( [_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypePachin] ) {
+//            _deviceToken = [[_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypePachin] copy];
+//        }
+//        else{
+//            [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:O8AppTargetTypePachin];
+//        }
+//    }
+//    else if( [tempMenuItem.title isEqualToString:O8AppTargetTypeReal] ){
+//        [_appTarget setString:@"development_com.gonline.O8AppReal"];
+//        if ( [_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeReal] ) {
+//            _deviceToken = [[_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeReal] copy];
+//        }
+//        else{
+//            [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:O8AppTargetTypeReal];
+//        }
+//    }
+//    else if( [tempMenuItem.title isEqualToString:O8AppTargetSlot] ){
+//        [_appTarget setString:@"development_com.gonline.O8AppSlot"];
+//        if ( [_targetKeyDeviceTokenValue objectForKey:O8AppTargetSlot] ) {
+//            _deviceToken = [[_targetKeyDeviceTokenValue objectForKey:O8AppTargetSlot] copy];
+//        }
+//        else{
+//            [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:O8AppTargetSlot];
+//        }
+//    }
+//    else{
+//        [_appTarget setString:@"development_com.gonline.O8AppElectronic"];
+//    }
+    
+    [_appTarget setString:CER_NAME];
+//    if ( [_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeAllInOne] ) {
+//        _deviceToken = [[_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeAllInOne] copy];
+//    }
+//    else{
+//        [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:O8AppTargetTypeAllInOne];
+//    }
+    
+    
+//    [self.tokenTextField setStringValue:_deviceToken];
+    _certificate = [[NSString stringWithFormat:@"%@/%@.cer", CER_PATH , _appTarget ] copy];
 }
 
 
 - (IBAction)change:(id)sender{
     NSString *tempTargetString = [_appTarget pathExtension];
-    if ( [tempTargetString isEqualToString:@"O8App"] ) {
-        tempTargetString = @"O8AppAllInOne";
-    }
     [_targetKeyDeviceTokenValue setObject:[[self.tokenTextField stringValue] copy] forKey:tempTargetString];
     _deviceToken = [[self.tokenTextField stringValue] copy];
     [self save];
 }
 
 - (IBAction)savePathWithUserPath:(id)sender{
-    if ( [pathTextField.stringValue isEqualToString:@""] || pathTextField == nil ) {
-        [pathTextField setStringValue:@"/Users/coody/Desktop/iOS_Share/doc/gonline/憑證/推播/O8App/Exhibition"];
-    }
-    _certificate = [[NSString stringWithFormat:@"%@/%@/development/%@.cer", [pathTextField.stringValue copy] , [[self.appTarget pathExtension] stringByReplacingOccurrencesOfString:@"O8App" withString:@"AllInOne"] , _appTarget ] copy];
-    [self savePathInBundle];
+//    if ( [pathTextField.stringValue isEqualToString:@""] || pathTextField == nil ) {
+//        [pathTextField setStringValue:@"/Users/coody/Desktop/iOS_Share/doc/gonline/憑證/推播/O8App/Exhibition"];
+//    }
+//    _certificate = [[NSString stringWithFormat:@"%@/%@/development/%@.cer", [pathTextField.stringValue copy] , [[self.appTarget pathExtension] stringByReplacingOccurrencesOfString:@"O8App" withString:@"AllInOne"] , _appTarget ] copy];
+//    [self savePathInBundle];
 }
 
 - (IBAction)addKeyValue:(id)sender{
