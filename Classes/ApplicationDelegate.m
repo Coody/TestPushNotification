@@ -28,16 +28,22 @@
 //NSString * const O8AppTargetTypeReal = @"O8AppReal";
 //NSString * const O8AppTargetSlot = @"O8AppSlot";
 
+#define D_Dev_Ver
+
 // *.cer 檔案名稱
-#define CER_NAME @"TTQRCodeDemo_Aps_Development"
+#ifdef D_Dev_Ver
+#define CER_NAME @"TTQRCode_Apns_Development"
+#else
+#define CER_NAME @"TTQRCode_Apns_Distribution"
+#endif
 
 // Product 名稱
-#define PRODUCT_NAME @"TTQRCodeDemo"
+#define PRODUCT_NAME @"TTQRCode"
 
 // 預設推播憑證路徑（絕對路徑）
-#define CER_PATH @"/Users/coodychou/Dropbox/Normi/important/App/TTQRCodeDemo/PushNotification"
+#define CER_PATH @"/Users/coodychou/Desktop/TaiwanTaxi/GitLab/iOS_Shared/Data/TTQRCode/PushNotification"
 // 預設 Token
-#define TEST_TOKEN @"a20b1ccb bca897e1 72cabe11 8f995c4a c5abf76e aef800bf 63a8d625 0095f51f"
+#define TEST_TOKEN @"0b0fdaac 019a0dbb 3f6d4c1f ad53bdd2 df4556a7 e52ebb1b 89b72343 1e8e5908"
 
 #include <Carbon/Carbon.h>
 
@@ -77,15 +83,17 @@
         if( _targetKeyDeviceTokenValue == nil ){
             _targetKeyDeviceTokenValue = [[NSMutableDictionary alloc] init];
         }
-        _appTarget = [[NSMutableString alloc] initWithString:@"TTQRCodeDemo_Aps_Development"];
+        _appTarget = [[NSMutableString alloc] initWithString:CER_NAME];
         _deviceToken = [[NSString alloc] initWithString:TEST_TOKEN];
-//        if ( ![_targetKeyDeviceTokenValue objectForKey:O8AppTargetTypeElectronic] ) {
-//
-//        }
         [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:PRODUCT_NAME];
         
-        _payload = @"{\"aps\":{\"sound\":\"default\",\"badge\":1,\"alert\":\"測試 App 推播！\"}}";
-        _certificate = [[NSString stringWithFormat:@"%@/%@.cer", CER_PATH , _appTarget ] copy];
+        _payload = @"{\"aps\":{\"sound\":\"normal\",\"badge\":1,\"alert\":\"台灣大車隊測試推撥\"},\"type\":0}";
+        
+#ifdef D_Dev_Ver
+        _certificate = [[NSString stringWithFormat:@"%@/Development/%@.cer", CER_PATH , _appTarget ] copy];
+#else
+        _certificate = [[NSString stringWithFormat:@"%@/Distribution/%@.cer", CER_PATH , _appTarget ] copy];
+#endif
         
     }
     return self;
@@ -318,7 +326,11 @@
     
     
 //    [self.tokenTextField setStringValue:_deviceToken];
-    _certificate = [[NSString stringWithFormat:@"%@/%@.cer", CER_PATH , _appTarget ] copy];
+#ifdef D_Dev_Ver
+    _certificate = [[NSString stringWithFormat:@"%@/Development/%@.cer", CER_PATH , _appTarget ] copy];
+#else
+    _certificate = [[NSString stringWithFormat:@"%@/Distribution/%@.cer", CER_PATH , _appTarget ] copy];
+#endif
 }
 
 
