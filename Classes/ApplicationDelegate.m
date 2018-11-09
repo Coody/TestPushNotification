@@ -43,7 +43,7 @@
 // 預設推播憑證路徑（絕對路徑）
 #define CER_PATH @"/Users/coodychou/Desktop/TaiwanTaxi/GitLab/iOS_Shared/Data/TTQRCode/PushNotification"
 // 預設 Token
-#define TEST_TOKEN @"0b0fdaac 019a0dbb 3f6d4c1f ad53bdd2 df4556a7 e52ebb1b 89b72343 1e8e5908"
+#define TEST_TOKEN @"fc908a75 5fc28bae d19bcb68 f733d2a5 c11f40fc 133a3219 b577bfb4 fa8d758f"
 
 #include <Carbon/Carbon.h>
 
@@ -87,7 +87,7 @@
         _deviceToken = [[NSString alloc] initWithString:TEST_TOKEN];
         [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:PRODUCT_NAME];
         
-        _payload = @"{\"aps\":{\"sound\":\"normal\",\"badge\":1,\"alert\":\"台灣大車隊測試推撥\"},\"type\":0}";
+        _payload = @"{\"aps\":{\"sound\":\"normal.wav\",\"badge\":1,\"alert\":\"台灣大車隊測試推撥\"},\"type\":0}";
         
 #ifdef D_Dev_Ver
         _certificate = [[NSString stringWithFormat:@"%@/Development/%@.cer", CER_PATH , _appTarget ] copy];
