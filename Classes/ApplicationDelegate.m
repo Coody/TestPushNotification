@@ -32,18 +32,19 @@
 
 // *.cer 檔案名稱
 #ifdef D_Dev_Ver
-#define CER_NAME @"TTQRCode_Apns_Development"
+#define CER_NAME @"TaiwanTaxiClient_Apns_Development"
 #else
-#define CER_NAME @"TTQRCode_Apns_Distribution"
+#define CER_NAME @"TaiwanTaxiClient_Apns_Distribution"
 #endif
 
 // Product 名稱
-#define PRODUCT_NAME @"TTQRCode"
+#define PRODUCT_NAME @"TaiwanTaxiClient"
 
 // 預設推播憑證路徑（絕對路徑）
-#define CER_PATH @"/Users/coodychou/Desktop/TaiwanTaxi/GitLab/iOS_Shared/Data/TTQRCode/PushNotification"
+#define CER_PATH @"/Users/choucoody/iOS_App_Cer_And_ProvisionProfile/Data/TaiwanTaxiClient/PushNotification"
 // 預設 Token
-#define TEST_TOKEN @"fc908a75 5fc28bae d19bcb68 f733d2a5 c11f40fc 133a3219 b577bfb4 fa8d758f"
+// 041b9e9157c7952728b848b452888522cc4c24e9c1ccefd171e7d7607a172124
+#define TEST_TOKEN @"041b9e91 57c79527 28b848b4 52888522 cc4c24e9 c1ccefd1 71e7d760 7a172124"
 
 #include <Carbon/Carbon.h>
 
@@ -87,12 +88,18 @@
         _deviceToken = [[NSString alloc] initWithString:TEST_TOKEN];
         [_targetKeyDeviceTokenValue setObject:[_deviceToken copy] forKey:PRODUCT_NAME];
         
-        _payload = @"{\"aps\":{\"sound\":\"normal.wav\",\"badge\":1,\"alert\":\"台灣大車隊測試推撥\"},\"type\":0}";
+        ///////////////////////////////////////////////////////////////////////
+        // 司機晚三分鐘 T_3
+        _payload = @"{\"aps\":{\"sound\":\"default\",\"badge\":1,\"alert\":\"測試 App 推播！\"},\"srv\":\"T_3_0900888069\"}";
+        ///////////////////////////////////////////////////////////////////////
+        // 分享路徑 S_1
+//        _payload = @"{\"aps\":{\"sound\":\"default\",\"badge\":1,\"alert\":\"測試 App 推播！\"},\"srv\":\"S_1_DIP19062600603_0900888069\"}";
+        //////////////////////////////////////////////////////////////////////
         
 #ifdef D_Dev_Ver
-        _certificate = [[NSString stringWithFormat:@"%@/Development/%@.cer", CER_PATH , _appTarget ] copy];
+        _certificate = [[NSString stringWithFormat:@"%@/Development/%@.cer", CER_PATH , CER_NAME ] copy];
 #else
-        _certificate = [[NSString stringWithFormat:@"%@/Distribution/%@.cer", CER_PATH , _appTarget ] copy];
+        _certificate = [[NSString stringWithFormat:@"%@/Distribution/%@.cer", CER_PATH , CER_NAME ] copy];
 #endif
         
     }
@@ -327,9 +334,9 @@
     
 //    [self.tokenTextField setStringValue:_deviceToken];
 #ifdef D_Dev_Ver
-    _certificate = [[NSString stringWithFormat:@"%@/Development/%@.cer", CER_PATH , _appTarget ] copy];
+    _certificate = [[NSString stringWithFormat:@"%@/Development/%@.cer", CER_PATH , CER_NAME ] copy];
 #else
-    _certificate = [[NSString stringWithFormat:@"%@/Distribution/%@.cer", CER_PATH , _appTarget ] copy];
+    _certificate = [[NSString stringWithFormat:@"%@/Distribution/%@.cer", CER_PATH , CER_NAME ] copy];
 #endif
 }
 
