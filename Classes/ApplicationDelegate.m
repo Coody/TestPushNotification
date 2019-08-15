@@ -44,7 +44,12 @@
 #define CER_PATH @"/Users/choucoody/iOS_App_Cer_And_ProvisionProfile/Data/TaiwanTaxiClient/PushNotification"
 // 預設 Token
 // 041b9e9157c7952728b848b452888522cc4c24e9c1ccefd171e7d7607a172124
-#define TEST_TOKEN @"041b9e91 57c79527 28b848b4 52888522 cc4c24e9 c1ccefd1 71e7d760 7a172124"
+// 6ef86de1 d7968fe8 4e936ecb 7abd48a5 00e0e3ad c02a5fe4 8d48e297 292f177f
+// iPhone X
+// 7ba9bbfc 50db7995 e8126a70 99017a1f 91e7255d 0aba9597 b5c5d43d 56472d0f 
+// iphone 6
+// 6ef86de1 d7968fe8 4e936ecb 7abd48a5 00e0e3ad c02a5fe4 8d48e297 292f177f
+#define TEST_TOKEN @"7ba9bbfc 50db7995 e8126a70 99017a1f 91e7255d 0aba9597 b5c5d43d 56472d0f"
 
 #include <Carbon/Carbon.h>
 
@@ -90,7 +95,7 @@
         
         ///////////////////////////////////////////////////////////////////////
         // 司機晚三分鐘 T_3
-        _payload = @"{\"aps\":{\"sound\":\"default\",\"badge\":1,\"alert\":\"測試 App 推播！\"},\"srv\":\"T_3_0900888069\"}";
+        _payload = @"{\"aps\":{\"content-available\":1,\"sound\":\"default\",\"badge\":1,\"alert\":\"測試 App 推播！\"},\"srv\":\"T_3_0900888069\"}";
         ///////////////////////////////////////////////////////////////////////
         // 分享路徑 S_1
 //        _payload = @"{\"aps\":{\"sound\":\"default\",\"badge\":1,\"alert\":\"測試 App 推播！\"},\"srv\":\"S_1_DIP19062600603_0900888069\"}";
@@ -366,7 +371,7 @@
         
         [tempPayload setString:[tempPayload substringToIndex:([tempPayload length]-1)]];
         if ((![tempValueString isEqualToString:@""] && tempValueString != nil)) {
-            // @"{\"aps\":{\"sound\":\"default\",\"badge\":1,\"alert\":\"測試 O8App 推播！\"}}";
+            // @"{\"aps\":{\"sound\":\"default\",\"badge\":1,\"alert\":\"測試 App 推播！\"}}";
             [tempPayload setString:[tempPayload stringByAppendingString:[NSString stringWithFormat:@",\"%@\":\"%@\"}" , tempKeyString , tempValueString]]];
             _payload = [tempPayload copy];
             [payLoadTextField setStringValue:_payload];
