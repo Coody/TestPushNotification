@@ -49,7 +49,8 @@
 // 7ba9bbfc 50db7995 e8126a70 99017a1f 91e7255d 0aba9597 b5c5d43d 56472d0f 
 // iphone 6
 // 6ef86de1 d7968fe8 4e936ecb 7abd48a5 00e0e3ad c02a5fe4 8d48e297 292f177f
-#define TEST_TOKEN @"7ba9bbfc 50db7995 e8126a70 99017a1f 91e7255d 0aba9597 b5c5d43d 56472d0f"
+//#define TEST_TOKEN @"a6a06ab7d8f5155f4a0f652684cb648e925b0fde0e4aced997785eefbbcc08ec"
+#define TEST_TOKEN @"a6a06ab7 d8f5155f 4a0f6526 84cb648e 925b0fde 0e4aced9 97785eef bbcc08ec"
 
 #include <Carbon/Carbon.h>
 
@@ -95,7 +96,7 @@
         
         ///////////////////////////////////////////////////////////////////////
         // 司機晚三分鐘 T_3
-        _payload = @"{\"aps\":{\"content-available\":1,\"sound\":\"default\",\"badge\":1,\"alert\":\"測試 App 推播！\"},\"srv\":\"T_3_0900888069\"}";
+        _payload = @"{\"aps\":{\"sound\":\"default\",\"badge\":1,\"alert\":\"測試 App 推播！\",\"content-available\":1},\"srv\":\"T_3_0900888069\"}";
         ///////////////////////////////////////////////////////////////////////
         // 分享路徑 S_1
 //        _payload = @"{\"aps\":{\"sound\":\"default\",\"badge\":1,\"alert\":\"測試 App 推播！\"},\"srv\":\"S_1_DIP19062600603_0900888069\"}";
